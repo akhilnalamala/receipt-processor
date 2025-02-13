@@ -18,11 +18,13 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 	var receipt models.Receipt
 
 	if err := render.DecodeJSON(r.Body, &receipt); err != nil {
+		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "The receipt is invalid."})
 		return
 	}
 
 	if err := receipt.Validate(); err != nil {
+		render.Status(r, http.StatusBadRequest)
 		render.JSON(w, r, map[string]string{"error": "The receipt is invalid."})
 		return
 	}
@@ -31,7 +33,7 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 
 	memory_store.StoreReceipt(receiptID, receipt)
 
-	w.WriteHeader(http.StatusOK)
+	render.Status(r, http.StatusOK)
 	render.JSON(w, r, map[string]string{"id": receiptID})
 }
 
@@ -42,11 +44,13 @@ func GetReceiptPointsHandler(w http.ResponseWriter, r *http.Request) {
 
 	receipt, exists := memory_store.GetReceipt(id)
 	if !exists {
-		http.Error(w, `{"error": "No receipt found for that ID."}`, http.StatusNotFound)
+		render.Status(r, http.StatusNotFound)
+		render.JSON(w, r, map[string]string{"error": "No receipt found for that ID."})
 		return
 	}
 
 	points := points.CalculatePoints(receipt)
 
+	render.Status(r, http.StatusOK)
 	render.JSON(w, r, map[string]int{"points": points})
 }
