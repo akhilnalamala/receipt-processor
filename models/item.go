@@ -17,14 +17,17 @@ type Item struct {
 
 func (i *Item) Validate() error {
 
+	// this validates that the required fields are present
 	if err := validate.Struct(i); err != nil {
 		return err
 	}
 
+	// regex validation for the shortDescription field
 	if !descriptionRegex.MatchString(i.ShortDescription) {
 		return errors.New("invalid description format")
 	}
 
+	// regex validation for the price field
 	if !priceRegex.MatchString(i.Price) {
 		return errors.New("invalid price format")
 	}

@@ -12,6 +12,8 @@ import (
 	"github.com/google/uuid"
 )
 
+// return: a newly generated uuid for a given receipt as part of the response
+// stores the receipt in a map, with the new id acting as the key
 func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 	var receipt models.Receipt
 
@@ -33,6 +35,8 @@ func ProcessReceipt(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, map[string]string{"id": receiptID})
 }
 
+// return: the points tally of a receipt as part of the response
+// looks up the receipt by the provided receiptID in the map
 func GetReceiptPointsHandler(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -42,9 +46,7 @@ func GetReceiptPointsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Calculate points
 	points := points.CalculatePoints(receipt)
 
-	// Return JSON response
 	render.JSON(w, r, map[string]int{"points": points})
 }

@@ -8,7 +8,9 @@ import (
 
 func SetupRoutes() *chi.Mux {
 	r := chi.NewRouter()
+
 	r.Post("/receipts/process", handlers.ProcessReceipt)
 	r.Get("/receipts/{id}/points", handlers.GetReceiptPointsHandler)
+
 	return r
 }

@@ -23,18 +23,24 @@ type Receipt struct {
 }
 
 func (r *Receipt) Validate() error {
+
+	// this validates that the required fields are present
+	// this also validates the purchaseDate and purchaseTime fields
 	if err := validate.Struct(r); err != nil {
 		return err
 	}
 
+	// regex validation for retailer field
 	if !retailerRegex.MatchString(r.Retailer) {
 		return errors.New("invalid retailer format")
 	}
 
+	// regex validation for total field
 	if !totalRegex.MatchString(r.Total) {
 		return errors.New("invalid total format")
 	}
 
+	// this validates each item using the validation defined in the item model
 	for i := range r.Items {
 		if err := r.Items[i].Validate(); err != nil {
 			return errors.New("invalid item in receipt")
