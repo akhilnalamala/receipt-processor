@@ -16,3 +16,11 @@ func StoreReceipt(id string, receipt models.Receipt) {
 
 	Receipts[id] = receipt
 }
+
+func GetReceipt(id string) (models.Receipt, bool) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	receipt, exists := Receipts[id]
+	return receipt, exists
+}
